@@ -34,38 +34,54 @@
 
             /*  connction.start();*/
 
-            const durum = $("#durum")
-            connction.onreconnecting(error => {
-                durum.css("background-color", "blue");
-                durum.css("color", "white");
-                durum.html("Bağlantı Kuruluyor...");
+            function animation() {
                 durum.fadeIn(2000, () => {
                     setTimeout(() => {
                         durum.fadeOut(2000);
                     }, 2000);
                 });
+            }
+
+            const durum = $("#durum")
+            connction.onreconnecting(error => {
+                durum.css("background-color", "blue");
+                durum.css("color", "white");
+                durum.html("Bağlantı Kuruluyor...");
+                animation();
             });
 
             connction.onreconnected(connectionId => {
                 durum.css("background-color", "green");
                 durum.css("color", "white");
                 durum.html("Bağlantı Kuruldu.");
-                durum.fadeIn(2000, () => {
-                    setTimeout(() => {
-                        durum.fadeOut(2000);
-                    }, 2000);
-                });
+                animation();
             });
 
             connction.onclose(connectionId => {
                 durum.css("background-color", "red");
                 durum.css("color", "white");
                 durum.html("Bağlanılamadı...");
-                durum.fadeIn(2000, () => {
-                    setTimeout(() => {
-                        durum.fadeOut(2000);
-                    }, 2000);
+                animation();
+            });
+
+            connction.on("userJoined", connectionId => {
+                durum.html(`${connectionId} Bağlandı`);
+                durum.css("background-color", "green");
+                animation();
+            });
+
+            connction.on("userLeaved", connectionId => {
+                durum.html(`${connectionId} Ayrıldı`);
+                durum.css("background-color", "red");
+                animation();
+            });
+
+            connction.on("clients", clientsData => {
+                let text = "";
+                $.each(clientsData, (Index, item) => {
+                    text += `<li>${item}</li>`;
                 });
+                $("#clients").html(text);
             });
 
             $("#btnGonder").click(() => {
@@ -89,6 +105,11 @@
     <button id="btnGonder" >Gönder</button>
 
     <div id="mesajlar"></div>
+    <div>
+        <ul id="clients">
+
+        </ul>
+    </div>
 
 </body>
 </html>
