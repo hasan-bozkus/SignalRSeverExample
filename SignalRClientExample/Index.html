@@ -86,7 +86,7 @@
 
             $("#btnGonder").click(() => {
                 let message = $("#txtMessage").val();
-                connction.invoke("SendMessage", message).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
+                connction.invoke("SendMessageAsync", message).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
             });
 
             connction.on("receiveMessage", message => {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SignalRSeverExample.Businnes;
 using SignalRSeverExample.Hubs;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,9 @@ namespace SignalRSeverExample
             .AllowCredentials()
             .SetIsOriginAllowed(origin => true)
             ));
+            services.AddTransient<myBusinnes>();
             services.AddSignalR();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +43,7 @@ namespace SignalRSeverExample
             {
                 //http://localhost:48643/myhub
                 endpoints.MapHub<MyHub>("/myhub");
+                endpoints.MapControllers();
 
             });
         }
