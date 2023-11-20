@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="SignalRClientExample\jquery.min.js" />
+    <Content Include="SignalRClientExample\jquery.min.map" />
+    <Content Include="SignalRClientExample\signalr.min.js" />
+    <Content Include="SignalRClientExample\signalr.min.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>
