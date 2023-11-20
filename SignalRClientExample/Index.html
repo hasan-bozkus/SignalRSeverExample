@@ -1,15 +1,72 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+
     <script src="signalr.min.js"></script>
     <script src="jquery.min.js"></script>
     <script>
+
+        //onreconnecting: Yeniden bağlanma girişimlerini başlatmadan önce fırlatınlan/tetiklenen eventtir.
+
+        //onreconnected: Yeniden bağlantı gerçekleştiğinde tetiklenen fonksiyondur.
+
+        //onclose: Yeniden bağlantı girişimlerinin sonuçsuz kaldığı durumlarda fırlatılır.
+
+
         $(document).ready(() => {
             const connction = new signalR.HubConnectionBuilder()
                 .withUrl("http://localhost:48643/myhub")
+                .withAutomaticReconnect([1000, 1000, 2000]) //0, 2,10, 30 ...> Bu fonksiyon bağlantı var lakin koptuğu durumlarda kullanılır.
                 .build();
 
-            connction.start();
+
+            //Bağlantının hiç kurulmadığı  durumlarda bu fonksiyon kullanılır.
+            async function start() {
+                try {
+                    await connction.start();
+                }
+                catch (error) {
+                    setTimeout(() => start(), 2000);
+                }
+            }
+
+            start();
+
+            /*  connction.start();*/
+
+            const durum = $("#durum")
+            connction.onreconnecting(error => {
+                durum.css("background-color", "blue");
+                durum.css("color", "white");
+                durum.html("Bağlantı Kuruluyor...");
+                durum.fadeIn(2000, () => {
+                    setTimeout(() => {
+                        durum.fadeOut(2000);
+                    }, 2000);
+                });
+            });
+
+            connction.onreconnected(connectionId => {
+                durum.css("background-color", "green");
+                durum.css("color", "white");
+                durum.html("Bağlantı Kuruldu.");
+                durum.fadeIn(2000, () => {
+                    setTimeout(() => {
+                        durum.fadeOut(2000);
+                    }, 2000);
+                });
+            });
+
+            connction.onclose(connectionId => {
+                durum.css("background-color", "red");
+                durum.css("color", "white");
+                durum.html("Bağlanılamadı...");
+                durum.fadeIn(2000, () => {
+                    setTimeout(() => {
+                        durum.fadeOut(2000);
+                    }, 2000);
+                });
+            });
 
             $("#btnGonder").click(() => {
                 let message = $("#txtMessage").val();
@@ -17,18 +74,21 @@
             });
 
             connction.on("receiveMessage", message => {
-                $("div").append(message + "<br />")
+                $("#mesajlar").append(message + "<br />")
             });
+
         });
     </script>
 </head>
 <body>
 
+    <div id="durum" style="display:none;"></div>
+
     <input id="txtMessage" type="text" />
 
     <button id="btnGonder" >Gönder</button>
 
-    <div></div>
+    <div id="mesajlar"></div>
 
 </body>
 </html>
