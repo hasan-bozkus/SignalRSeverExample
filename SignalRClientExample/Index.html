@@ -88,17 +88,19 @@
             $("#btnGonder").click(() => {
                 let message = $("#txtMessage").val();
                 let connectionIds = $("#connectionIds").val().split(",");
-                connction.invoke("SendMessageAsync", message, connectionIds).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
+                let groups = $("#txtGroups").val().split(",");
+                connction.invoke("SendMessageAsync", message, groups[0]).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
+                //connction.invoke("SendMessageAsync", message, connectionIds).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
             });
 
             connction.on("receiveMessage", message => {
-                $("#mesajlar").append(message + "<br />")
+                $("#mesajlar").append(message + "<br />");
             });
 
             let _connectionId = "";
             connction.on("getConnectionId", connectionId => {
                 _connectionId = connectionId
-                $("#connectionId").html(`Conneciton Id: ${connectionId}`)
+                $("#connectionId").html(`Conneciton Id: ${connectionId}`);
             })
 
             $("#btnGrubaGir").click(() => {
@@ -110,18 +112,20 @@
 </head>
 <body>
     <div style="background-color: black; color:white" id="connectionId"></div>
-    <input type="radio" name="grup" value="A"/> A
-    <input type="radio" name="grup" value="B"/> B
-    <input type="radio" name="grup" value="C"/> C
-    <button id="btnGrubaGir">Gruba Gir</button>
+    <input type="radio" name="grup" value="A" /> A
+    <input type="radio" name="grup" value="B" /> B
+    <input type="radio" name="grup" value="C" /> C
+    <button id="btnGrubaGir" style="cursor:pointer;">Gruba Gir</button>
     <br />
     <div id="durum" style="display:none;"></div>
 
     <input id="txtMessage" type="text" placeholder="Mesaj" />
     <br />
+    <input type="text" id="txtGroups" placeholder="Groups" />
+    <br />
     <textarea id="connectionIds" cols="30" rows="10" placeholder="kişinin Id'si'"></textarea>
     <br />
-    <button id="btnGonder">Gönder</button>
+    <button id="btnGonder" style="cursor:pointer;">Gönder</button>
 
     <div id="mesajlar"></div>
     <!--<div>
