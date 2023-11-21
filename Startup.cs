@@ -43,6 +43,7 @@ namespace SignalRSeverExample
             {
                 //http://localhost:48643/myhub
                 endpoints.MapHub<MyHub>("/myhub");
+                endpoints.MapHub<MessageHub>("/messagehub");
                 endpoints.MapControllers();
 
             });

@@ -15,7 +15,7 @@
 
         $(document).ready(() => {
             const connction = new signalR.HubConnectionBuilder()
-                .withUrl("http://localhost:48643/myhub")
+                .withUrl("http://localhost:48643/messagehub")
                 .withAutomaticReconnect([1000, 1000, 2000]) //0, 2,10, 30 ...> Bu fonksiyon bağlantı var lakin koptuğu durumlarda kullanılır.
                 .build();
 
@@ -64,52 +64,71 @@
                 animation();
             });
 
-            connction.on("userJoined", connectionId => {
-                durum.html(`${connectionId} Bağlandı`);
-                durum.css("background-color", "green");
-                animation();
-            });
+            //connction.on("userJoined", connectionId => {
+            //    durum.html(`${connectionId} Bağlandı`);
+            //    durum.css("background-color", "green");
+            //    animation();
+            //});
 
-            connction.on("userLeaved", connectionId => {
-                durum.html(`${connectionId} Ayrıldı`);
-                durum.css("background-color", "red");
-                animation();
-            });
+            //connction.on("userLeaved", connectionId => {
+            //    durum.html(`${connectionId} Ayrıldı`);
+            //    durum.css("background-color", "red");
+            //    animation();
+            //});
 
-            connction.on("clients", clientsData => {
-                let text = "";
-                $.each(clientsData, (Index, item) => {
-                    text += `<li>${item}</li>`;
-                });
-                $("#clients").html(text);
-            });
+            //connction.on("clients", clientsData => {
+            //    let text = "";
+            //    $.each(clientsData, (Index, item) => {
+            //        text += `<li>${item}</li>`;
+            //    });
+            //    $("#clients").html(text);
+            //});
+
 
             $("#btnGonder").click(() => {
                 let message = $("#txtMessage").val();
-                connction.invoke("SendMessageAsync", message).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
+                let connectionIds = $("#connectionIds").val().split(",");
+                connction.invoke("SendMessageAsync", message, connectionIds).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
             });
 
             connction.on("receiveMessage", message => {
                 $("#mesajlar").append(message + "<br />")
             });
 
+            let _connectionId = "";
+            connction.on("getConnectionId", connectionId => {
+                _connectionId = connectionId
+                $("#connectionId").html(`Conneciton Id: ${connectionId}`)
+            })
+
+            $("#btnGrubaGir").click(() => {
+                let groupName = $("input[name=grup]:checked").val();
+                connction.invoke("addGroup", _connectionId, groupName).catch(error => console.log(`Mesaj gönderilirken hata  oluştu. ${error}`));
+            });
         });
     </script>
 </head>
 <body>
-
+    <div style="background-color: black; color:white" id="connectionId"></div>
+    <input type="radio" name="grup" value="A"/> A
+    <input type="radio" name="grup" value="B"/> B
+    <input type="radio" name="grup" value="C"/> C
+    <button id="btnGrubaGir">Gruba Gir</button>
+    <br />
     <div id="durum" style="display:none;"></div>
 
-    <input id="txtMessage" type="text" />
-
-    <button id="btnGonder" >Gönder</button>
+    <input id="txtMessage" type="text" placeholder="Mesaj" />
+    <br />
+    <textarea id="connectionIds" cols="30" rows="10" placeholder="kişinin Id'si'"></textarea>
+    <br />
+    <button id="btnGonder">Gönder</button>
 
     <div id="mesajlar"></div>
-    <div>
+    <!--<div>
         <ul id="clients">
 
         </ul>
-    </div>
+    </div>-->
 
 </body>
 </html>
