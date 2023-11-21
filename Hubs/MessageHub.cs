@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SignalRSeverExample.Hubs
@@ -9,6 +10,8 @@ namespace SignalRSeverExample.Hubs
     public class MessageHub : Hub
     {
         //public async Task SendMessageAsync(string message, IEnumerable<string> connectionIds)
+        //public async Task SendMessageAsync(string message, string groupName, IEnumerable<string> connectionIds)
+        //public async Task SendMessageAsync(string message, IEnumerable<string> groups)
         public async Task SendMessageAsync(string message, string groupName)
         {
             #region Caller
@@ -46,16 +49,22 @@ namespace SignalRSeverExample.Hubs
             #region Group
             //Belirtilen gruptaki tüm clientlara bildiride bulunur.
             //önce gruplar oluşturulmalı ve ardından clinetlar gruplara subsc. olmalı.
-            await Clients.Group(groupName).SendAsync("receiveMessage", message);
+            //await Clients.Group(groupName).SendAsync("receiveMessage", message);
             #endregion
 
             #region GroupExcept
+            //Belirtilen gruptaki, belirtilen clientlar dışındaki tüm clientlara mesaj iletmemizi sağlayan bir fonksiyondur.
+            //await Clients.GroupExcept(groupName, connectionIds).SendAsync("receiveMessage", message);
             #endregion
 
             #region Groups
+            //Birden çok gruptaki clientlara bildiride bulunmamızı sağlayan fonksiyondur.
+            //await Clients.Groups(groups).SendAsync("receiveMessage", message);
             #endregion
 
             #region OtherInGroups
+            //Bildiride bulunan client haricinde gruptaki tüm clientlara bildiride bulunan fonksiyondur.
+            await Clients.OthersInGroup(groupName).SendAsync("receiveMessage", message);
             #endregion
 
             #region User

@@ -5,14 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SignalRClientExample\style\bootstrap.min.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="SignalRClientExample\jquery.min.js" />
     <Content Include="SignalRClientExample\jquery.min.map" />
     <Content Include="SignalRClientExample\signalr.min.js" />
     <Content Include="SignalRClientExample\signalr.min.js.map" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Content Include="SignalRClientExample\style\bootstrap.min.css" />
   </ItemGroup>
 
 </Project>
